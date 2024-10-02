@@ -1,8 +1,9 @@
-import { KeyboardControls, OrbitControls } from "@react-three/drei";
+import { Box, KeyboardControls, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Physics, RigidBody } from "@react-three/rapier";
-import { Room } from "../../components/scene";
-import Ecctr from "ecctrl";
+import { Img, Room } from "../../components/scene";
+import Ecctr, { EcctrlJoystick } from "ecctrl";
+import { useStore } from "../../lib/store";
 
 const keyboardMap = [
   { name: "forward", keys: ["ArrowUp", "KeyW"] },
@@ -19,11 +20,21 @@ const keyboardMap = [
 ];
 
 export function Main() {
+  const store = useStore();
   return (
     <div className="w-screen h-screen">
       <Canvas style={{ backgroundColor: "#555555" }} className="w-full h-full">
         <OrbitControls />
-
+        {store.frames.map((v) => (
+          <Box
+            position={v.position}
+            rotation={v.rotation}
+            scale={v.scale}
+            args={[4, 4, 0.2]}
+          >
+            <Img src={v.img} />
+          </Box>
+        ))}
         <pointLight position={[0, 20, 10]} intensity={1.5} />
         <Physics>
           <RigidBody type="fixed" colliders="trimesh">
@@ -48,6 +59,9 @@ export function Main() {
           <ambientLight />
         </Physics>
       </Canvas>
+      <div className="md:hidden">
+        <EcctrlJoystick buttonNumber={0} />
+      </div>
     </div>
   );
 }

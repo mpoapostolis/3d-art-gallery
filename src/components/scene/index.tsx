@@ -15,7 +15,7 @@ import { GLTF } from "three-stdlib";
 import { useRef, useState } from "react";
 import { useLoader } from "@react-three/fiber";
 import { useStore } from "../../lib/store";
-const Img = (props: { src: string }) => {
+export const Img = (props: { src: string }) => {
   const colorMap = useLoader(THREE.TextureLoader, props.src);
   return <meshStandardMaterial side={THREE.DoubleSide} map={colorMap} />;
 };
@@ -48,55 +48,6 @@ export function Room(
   const [selected, setSelected] = useState<string | undefined | null>(null);
   return (
     <>
-      {store.frames.map((v, i) => {
-        return props.editor ? (
-          // @ts-ignore
-          <TransformControls
-            mode={mode}
-            onClick={() => {
-              setSelected(v.uuid);
-              store.selectImage(undefined);
-              if (mode === "translate") setMode("rotate");
-              if (mode === "rotate") setMode("scale");
-              if (mode === "scale") setMode("translate");
-            }}
-            showX={v.uuid === selected}
-            showY={v.uuid === selected}
-            showZ={v.uuid === selected}
-            key={i}
-            position={v.position}
-            rotation={v.rotation}
-            scale={[1, 1, 1]}
-            enabled={selected === v.uuid}
-          >
-            {selected === v.uuid && (
-              <Html className="flex gap-3 w-fit">
-                <button
-                  className="py-2 px-4 bg-white rounded-lg"
-                  onClick={() => {
-                    store.removeFrame(v.uuid);
-                  }}
-                >
-                  Delete
-                </button>
-                <button
-                  className="py-2 px-4 bg-white rounded-lg"
-                  onClick={() => setSelected(undefined)}
-                >
-                  Close
-                </button>
-              </Html>
-            )}
-            <Box args={[4, 4, 0.2]}>
-              <Img src={v.img} />
-            </Box>
-          </TransformControls>
-        ) : (
-          <Box position={v.position} rotation={v.rotation} args={[4, 4, 0.2]}>
-            <Img src={v.img} />
-          </Box>
-        );
-      })}
       {store.selectedImage && (
         <Box args={[4, 4, 0.2]} ref={circleRef}>
           <Img src={store.selectedImage} />
@@ -108,6 +59,7 @@ export function Room(
           // @ts-ignore
           const point = intersections?.at(0)?.point;
           if (!point) return;
+          if (!circleRef.current) return;
           // @ts-ignore
           circleRef.current.position.z = point.z;
           // @ts-ignore
@@ -117,12 +69,13 @@ export function Room(
           // @ts-ignore
           circleRef.current.lookAt(0, point.y, 0);
         }}
-        onDoubleClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!store.selectedImage) return;
           const uuid = new THREE.Object3D().uuid;
           if (!circleRef.current) return;
           const [x, y, z] = circleRef.current.position.toArray();
           const [rx, ry, rz] = circleRef.current.rotation.toArray();
-          if (!store.selectedImage) return;
           store.selectImage(undefined);
           store.addFrame({
             uuid,
@@ -132,7 +85,7 @@ export function Room(
           });
         }}
         castShadow
-        scale={1.5}
+        scale={2}
         dispose={null}
         position={[2, 1.5, 2]}
       >
