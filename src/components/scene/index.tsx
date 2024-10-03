@@ -40,7 +40,9 @@ type GLTFResult = GLTF & {
 export function Room(
   props: JSX.IntrinsicElements["group"] & { editor?: boolean },
 ) {
-  const { nodes, materials } = useGLTF("/galery.glb") as GLTFResult;
+  const { nodes, materials } = useGLTF(
+    "/simple_room_solidify_0.17.glb",
+  ) as GLTFResult;
   const circleRef = useRef<THREE.Mesh>(null);
   const store = useStore();
   const [mode, setMode] = useState<TransformControlsProps["mode"]>("translate");
@@ -156,10 +158,10 @@ export function Room(
             geometry={nodes.Cube003_2.geometry}
             material={materials.floor}
           />
-        </group>
+        </group>{" "}
       </group>
     </>
   );
 }
 
-useGLTF.preload("/galery.glb");
+useGLTF.preload("/simple_room_solidify_0.17.glb");
