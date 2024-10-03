@@ -4,6 +4,7 @@ import { Physics, RigidBody } from "@react-three/rapier";
 import { Img, Room } from "../../components/scene";
 import Ecctr, { EcctrlJoystick } from "ecctrl";
 import { useStore } from "../../lib/store";
+import { useState } from "react";
 
 const keyboardMap = [
   { name: "forward", keys: ["ArrowUp", "KeyW"] },
@@ -21,12 +22,30 @@ const keyboardMap = [
 
 export function Main() {
   const store = useStore();
+  const [selected, setSelected] = useState<string | undefined | null>(null);
   return (
     <div className="w-screen h-screen">
+      <dialog id="my_modal_2" className="modal">
+        <div className="max-w-screen-xl h-full w-fit modal-box">
+          <img
+            src={selected ?? ""}
+            alt="selected"
+            className="object-scale-down w-full h-full"
+          />
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
       <Canvas style={{ backgroundColor: "#555555" }} className="w-full h-full">
         <OrbitControls />
         {store.frames.map((v) => (
           <Box
+            // @ts-ignore
+            onClick={() => {
+              setSelected(v.img);
+              document.getElementById("my_modal_2").showModal();
+            }}
             position={v.position}
             rotation={v.rotation}
             scale={v.scale}

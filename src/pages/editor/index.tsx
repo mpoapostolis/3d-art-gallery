@@ -99,26 +99,30 @@ export function Editor() {
       <div className="h-full bg-black">
         <div className="overflow-auto h-screen">
           <div className="grid grid-cols-2 gap-4">
-            {[1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14].map((i) => (
-              <div
-                onClick={() => {
-                  store.setSelected(undefined);
-                  store.selectImage(
-                    store.selectedImage === `${i}.jpg` ? undefined : `${i}.jpg`,
-                  );
-                }}
-                key={i}
-                className={clsx("grid p-4  bg-white bg-opacity-15", {
-                  "border border-yellow-100":
-                    store.selectedImage === `${i}.jpg`,
-                })}
-              >
-                <img
-                  src={`/${i}.jpg`}
-                  className="object-scale-down w-full h-full"
-                />
-              </div>
-            ))}
+            {[1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map(
+              (i) => (
+                <div
+                  onClick={() => {
+                    store.setSelected(undefined);
+                    store.selectImage(
+                      store.selectedImage === `${i}.jpg`
+                        ? undefined
+                        : `${i}.jpg`,
+                    );
+                  }}
+                  key={i}
+                  className={clsx("grid p-4  bg-white bg-opacity-15", {
+                    "border border-yellow-100":
+                      store.selectedImage === `${i}.jpg`,
+                  })}
+                >
+                  <img
+                    src={`/${i}.jpg`}
+                    className="object-scale-down w-full h-full"
+                  />
+                </div>
+              ),
+            )}
           </div>
         </div>
       </div>
